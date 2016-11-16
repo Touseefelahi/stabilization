@@ -35,6 +35,7 @@ namespace stabilization
            
             CvInvoke.CvtColor(inputImage, inputGrayImage, ColorConversion.Bgr2Gray, 0);            
             CvInvoke.CornerHarris(inputGrayImage,outputCornerImage, 3);
+      
             CvInvoke.Normalize(outputCornerImage, outputCornerImage, 0, 255, NormType.MinMax, DepthType.Cv32F);         
            
             imageBoxInput.Image = inputGrayImage;
