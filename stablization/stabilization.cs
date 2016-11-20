@@ -96,12 +96,12 @@ namespace stabilization
                     //   updateMatrices(rigidTransform2D,newRigidTransform33);
                     refreshKeyPoints(corners,status,matches);
                     inputGrayImage.CopyTo(inputGrayImagePrevious);
-                    //   initializingTransform(); 
+                 //     initializingTransform(); 
                 }
                 catch (Exception)
                 {
                     labelErrors.Text = "Error "+Convert.ToString(++errorCount);
-                 //   updateReference(null,null);
+                    updateReference(null,null);
                 }
                
             }
