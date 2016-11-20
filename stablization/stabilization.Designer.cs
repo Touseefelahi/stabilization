@@ -107,7 +107,7 @@
             // checkBoxOpticalFlow
             // 
             this.checkBoxOpticalFlow.AutoSize = true;
-            this.checkBoxOpticalFlow.Location = new System.Drawing.Point(167, 507);
+            this.checkBoxOpticalFlow.Location = new System.Drawing.Point(167, 495);
             this.checkBoxOpticalFlow.Name = "checkBoxOpticalFlow";
             this.checkBoxOpticalFlow.Size = new System.Drawing.Size(81, 17);
             this.checkBoxOpticalFlow.TabIndex = 5;
@@ -135,7 +135,7 @@
             // checkBoxStabilized
             // 
             this.checkBoxStabilized.AutoSize = true;
-            this.checkBoxStabilized.Location = new System.Drawing.Point(167, 530);
+            this.checkBoxStabilized.Location = new System.Drawing.Point(167, 518);
             this.checkBoxStabilized.Name = "checkBoxStabilized";
             this.checkBoxStabilized.Size = new System.Drawing.Size(65, 17);
             this.checkBoxStabilized.TabIndex = 8;
@@ -159,6 +159,7 @@
             this.labelTransform00.Size = new System.Drawing.Size(13, 13);
             this.labelTransform00.TabIndex = 10;
             this.labelTransform00.Text = "0";
+            this.labelTransform00.Visible = false;
             // 
             // labelTransform01
             // 
@@ -168,6 +169,7 @@
             this.labelTransform01.Size = new System.Drawing.Size(13, 13);
             this.labelTransform01.TabIndex = 11;
             this.labelTransform01.Text = "0";
+            this.labelTransform01.Visible = false;
             // 
             // labelTransform02
             // 
@@ -177,6 +179,7 @@
             this.labelTransform02.Size = new System.Drawing.Size(13, 13);
             this.labelTransform02.TabIndex = 12;
             this.labelTransform02.Text = "0";
+            this.labelTransform02.Visible = false;
             // 
             // labelTransform12
             // 
@@ -186,6 +189,7 @@
             this.labelTransform12.Size = new System.Drawing.Size(13, 13);
             this.labelTransform12.TabIndex = 15;
             this.labelTransform12.Text = "0";
+            this.labelTransform12.Visible = false;
             // 
             // labelTransform11
             // 
@@ -195,6 +199,7 @@
             this.labelTransform11.Size = new System.Drawing.Size(13, 13);
             this.labelTransform11.TabIndex = 14;
             this.labelTransform11.Text = "0";
+            this.labelTransform11.Visible = false;
             // 
             // labelTransform10
             // 
@@ -204,6 +209,7 @@
             this.labelTransform10.Size = new System.Drawing.Size(13, 13);
             this.labelTransform10.TabIndex = 13;
             this.labelTransform10.Text = "0";
+            this.labelTransform10.Visible = false;
             // 
             // labelTrans3312
             // 
@@ -213,6 +219,7 @@
             this.labelTrans3312.Size = new System.Drawing.Size(13, 13);
             this.labelTrans3312.TabIndex = 21;
             this.labelTrans3312.Text = "0";
+            this.labelTrans3312.Visible = false;
             // 
             // labelTrans3311
             // 
@@ -222,6 +229,7 @@
             this.labelTrans3311.Size = new System.Drawing.Size(13, 13);
             this.labelTrans3311.TabIndex = 20;
             this.labelTrans3311.Text = "0";
+            this.labelTrans3311.Visible = false;
             // 
             // labelTrans3310
             // 
@@ -231,6 +239,7 @@
             this.labelTrans3310.Size = new System.Drawing.Size(13, 13);
             this.labelTrans3310.TabIndex = 19;
             this.labelTrans3310.Text = "0";
+            this.labelTrans3310.Visible = false;
             // 
             // labelTrans3302
             // 
@@ -240,6 +249,7 @@
             this.labelTrans3302.Size = new System.Drawing.Size(13, 13);
             this.labelTrans3302.TabIndex = 18;
             this.labelTrans3302.Text = "0";
+            this.labelTrans3302.Visible = false;
             // 
             // labelTrans3301
             // 
@@ -249,6 +259,7 @@
             this.labelTrans3301.Size = new System.Drawing.Size(13, 13);
             this.labelTrans3301.TabIndex = 17;
             this.labelTrans3301.Text = "0";
+            this.labelTrans3301.Visible = false;
             // 
             // labelTrans3300
             // 
@@ -258,6 +269,7 @@
             this.labelTrans3300.Size = new System.Drawing.Size(13, 13);
             this.labelTrans3300.TabIndex = 16;
             this.labelTrans3300.Text = "0";
+            this.labelTrans3300.Visible = false;
             // 
             // labelTransRigid12
             // 
@@ -267,6 +279,7 @@
             this.labelTransRigid12.Size = new System.Drawing.Size(13, 13);
             this.labelTransRigid12.TabIndex = 27;
             this.labelTransRigid12.Text = "0";
+            this.labelTransRigid12.Visible = false;
             // 
             // labelTransRigid11
             // 
@@ -276,6 +289,7 @@
             this.labelTransRigid11.Size = new System.Drawing.Size(13, 13);
             this.labelTransRigid11.TabIndex = 26;
             this.labelTransRigid11.Text = "0";
+            this.labelTransRigid11.Visible = false;
             // 
             // labelTransRigid10
             // 
@@ -285,6 +299,7 @@
             this.labelTransRigid10.Size = new System.Drawing.Size(13, 13);
             this.labelTransRigid10.TabIndex = 25;
             this.labelTransRigid10.Text = "0";
+            this.labelTransRigid10.Visible = false;
             // 
             // labelTransRigid02
             // 
@@ -294,6 +309,7 @@
             this.labelTransRigid02.Size = new System.Drawing.Size(13, 13);
             this.labelTransRigid02.TabIndex = 24;
             this.labelTransRigid02.Text = "0";
+            this.labelTransRigid02.Visible = false;
             // 
             // labelTransRigid01
             // 
@@ -303,6 +319,7 @@
             this.labelTransRigid01.Size = new System.Drawing.Size(13, 13);
             this.labelTransRigid01.TabIndex = 23;
             this.labelTransRigid01.Text = "0";
+            this.labelTransRigid01.Visible = false;
             // 
             // labelTransRigid00
             // 
@@ -312,6 +329,7 @@
             this.labelTransRigid00.Size = new System.Drawing.Size(13, 13);
             this.labelTransRigid00.TabIndex = 22;
             this.labelTransRigid00.Text = "0";
+            this.labelTransRigid00.Visible = false;
             // 
             // labelSumTransform
             // 
@@ -321,6 +339,7 @@
             this.labelSumTransform.Size = new System.Drawing.Size(13, 13);
             this.labelSumTransform.TabIndex = 28;
             this.labelSumTransform.Text = "0";
+            this.labelSumTransform.Visible = false;
             // 
             // labelSumTransformRigid
             // 
@@ -330,6 +349,7 @@
             this.labelSumTransformRigid.Size = new System.Drawing.Size(13, 13);
             this.labelSumTransformRigid.TabIndex = 28;
             this.labelSumTransformRigid.Text = "0";
+            this.labelSumTransformRigid.Visible = false;
             // 
             // labelSumTransform33
             // 
@@ -339,6 +359,7 @@
             this.labelSumTransform33.Size = new System.Drawing.Size(13, 13);
             this.labelSumTransform33.TabIndex = 28;
             this.labelSumTransform33.Text = "0";
+            this.labelSumTransform33.Visible = false;
             // 
             // stabilization
             // 

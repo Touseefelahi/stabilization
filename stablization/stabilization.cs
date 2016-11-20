@@ -61,7 +61,7 @@ namespace stabilization
 
         private void opticalFlow()
         {
-            var a = new MCvTermCriteria(50);
+            var a = new MCvTermCriteria(100);
             byte[] status;
             float[] errors;
             PointF[] corners;
@@ -73,7 +73,7 @@ namespace stabilization
 
             if (checkBoxStabilized.Checked)
             {
-                if (matches < status.Count() * 0.8)
+                if (matches < status.Count() * 0.9||matches<200)
                 {
                     labelErrors.Text = "Error " + Convert.ToString(++errorCount);
                     updateReference(null, null);
@@ -90,19 +90,18 @@ namespace stabilization
                     CvInvoke.Invert(rigidTransform, rigidTransform3, DecompMethod.Svd);                
                     var rigidTransform2D = transformTo2D(rigidTransform3);
                     CvInvoke.WarpAffine(inputImage, stabilizedImage, rigidTransform2D,
-                        new Size(),Inter.Linear,Warp.Default,BorderType.Transparent);
+                        new Size(),Inter.Linear,Warp.Default,BorderType.Constant);                                  
 
-                 //   checkBoxStabilized.Checked = false;
-
-                 //   updateMatrices(rigidTransform2D,newRigidTransform33);
-                 //   refreshKeyPoints(corners,status,matches);
-                      inputGrayImage.CopyTo(inputGrayImagePrevious);
-                 //   initializingTransform();   
+                    //   checkBoxStabilized.Checked = false;
+                    //   updateMatrices(rigidTransform2D,newRigidTransform33);
+                    refreshKeyPoints(corners,status,matches);
+                    inputGrayImage.CopyTo(inputGrayImagePrevious);
+                    //   initializingTransform(); 
                 }
                 catch (Exception)
                 {
                     labelErrors.Text = "Error "+Convert.ToString(++errorCount);
-                    updateReference(null,null);
+                 //   updateReference(null,null);
                 }
                
             }
