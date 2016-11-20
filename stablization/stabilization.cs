@@ -18,7 +18,7 @@ namespace stabilization
     public partial class stabilization : Form
     {
         private Image<Bgr, byte> inputImage,stabilizedImage;
-        private Image<Gray, byte> inputGrayImage, inputGrayImagePrevious;
+        private Image<Gray, byte> inputGrayImage, inputGrayImagePrevious,imageReference,imageCurrentFrame,imageShifted;
         private Matrix<float> rigidTransform;
         private FastDetector fastDetector;
         private Capture cam;
@@ -31,7 +31,9 @@ namespace stabilization
             InitializeComponent();
             inputImage = new Image<Bgr, byte>(640, 480);
             stabilizedImage = new Image<Bgr, byte>(640, 480);
-
+            imageReference = new Image<Gray, byte>(inputImage.Size);
+            imageCurrentFrame = new Image<Gray, byte>(inputImage.Size);
+            imageShifted = new Image<Gray, byte>(inputImage.Size);
             inputGrayImage = new Image<Gray, byte>(inputImage.Size);
             inputGrayImagePrevious = new Image<Gray, byte>(inputImage.Size);
             fastDetector = new FastDetector();
@@ -55,8 +57,7 @@ namespace stabilization
             {
                 opticalFlow();               
             }
-            imageBoxOutput.Image = stabilizedImage;
-            imageBoxInput.Image = inputImage;   
+            imageBoxLiveFeed.Image = inputImage;   
         }
 
         private void opticalFlow()
@@ -93,7 +94,7 @@ namespace stabilization
                         new Size(),Inter.Linear,Warp.Default,BorderType.Constant);                                  
 
                     //   checkBoxStabilized.Checked = false;
-                    //   updateMatrices(rigidTransform2D,newRigidTransform33);
+                    //   updateMatrices(rigidTransform2D);
                     refreshKeyPoints(corners,status,matches);
                     inputGrayImage.CopyTo(inputGrayImagePrevious);
                     //   initializingTransform(); 
@@ -107,25 +108,8 @@ namespace stabilization
             }
         }
 
-        private void updateMatrices(Matrix<float> rigidTransform2D, Matrix<float> newRigidTransform33)
+        private void updateMatrices(Matrix<float> rigidTransform2D)
         {
-            labelTransRigid00.Text = Convert.ToString(rigidTransform.Data[0, 0]);
-            labelTransRigid01.Text = Convert.ToString(rigidTransform.Data[0, 1]);
-            labelTransRigid02.Text = Convert.ToString(rigidTransform.Data[0, 2]);
-            labelTransRigid10.Text = Convert.ToString(rigidTransform.Data[1, 0]);
-            labelTransRigid11.Text = Convert.ToString(rigidTransform.Data[1, 1]);
-            labelTransRigid12.Text = Convert.ToString(rigidTransform.Data[1, 2]);
-
-            labelSumTransformRigid.Text = Convert.ToString
-                (
-                rigidTransform.Data[0, 0] +
-                rigidTransform.Data[0, 1] +
-                rigidTransform.Data[0, 2] +
-                rigidTransform.Data[1, 0] +
-                rigidTransform.Data[1, 1] +
-                rigidTransform.Data[1, 2]
-                );
-
             labelTransform00.Text = Convert.ToString(rigidTransform2D.Data[0, 0]);
             labelTransform01.Text = Convert.ToString(rigidTransform2D.Data[0, 1]);
             labelTransform02.Text = Convert.ToString(rigidTransform2D.Data[0, 2]);
@@ -141,23 +125,6 @@ namespace stabilization
                 rigidTransform2D.Data[1, 0] +
                 rigidTransform2D.Data[1, 1] +
                 rigidTransform2D.Data[1, 2]
-                );
-
-            labelTrans3300.Text = Convert.ToString(newRigidTransform33.Data[0, 0]);
-            labelTrans3301.Text = Convert.ToString(newRigidTransform33.Data[0, 1]);
-            labelTrans3302.Text = Convert.ToString(newRigidTransform33.Data[0, 2]);
-            labelTrans3310.Text = Convert.ToString(newRigidTransform33.Data[1, 0]);
-            labelTrans3311.Text = Convert.ToString(newRigidTransform33.Data[1, 1]);
-            labelTrans3312.Text = Convert.ToString(newRigidTransform33.Data[1, 2]);
-
-            labelSumTransform33.Text = Convert.ToString
-                (
-                newRigidTransform33.Data[0, 0] +
-                newRigidTransform33.Data[0, 1] +
-                newRigidTransform33.Data[0, 2] +
-                newRigidTransform33.Data[1, 0] +
-                newRigidTransform33.Data[1, 1] +
-                newRigidTransform33.Data[1, 2]
                 );
         }
 
@@ -211,6 +178,63 @@ namespace stabilization
             return r;
         }
 
+        private void buttonCapture2_Click(object sender, EventArgs e)
+        {
+            inputGrayImage.CopyTo(imageCurrentFrame);
+            imageBoxInput2.Image = imageCurrentFrame;
+        }
+
+        private void buttonShift_Click(object sender, EventArgs e)
+        {
+            var keypoints = fastDetector.Detect(imageReference, null);
+            
+            vectors = new VectorOfKeyPoint(keypoints);
+            var aa = vectors.Size;
+          
+
+            var a = new MCvTermCriteria(100);
+            Matrix<float> rigidTransform;
+            float[,] target = {
+                            {1f,0,0},
+                            {0,1f,0},
+                            {0, 0,1f},
+                       };
+            rigidTransform = new Matrix<float>(target);
+
+            byte[] status;
+            float[] errors;
+            PointF[] corners;
+            var vectors2 = vector2Point(vectors);
+
+            CvInvoke.CalcOpticalFlowPyrLK(imageReference, imageCurrentFrame, vectors2,
+                new Size(10, 10), 2, a, out corners, out status, out errors);
+            var matches = countNonZero(status);
+
+
+            imageBoxInput1.Image = imageReference;
+            labelStatus.Text = "Found =" + Convert.ToString(matches);
+            labelTotal.Text = "Total =" + Convert.ToString(errors.Count());
+            try
+            {
+                var newRigidTransform = CvInvoke.EstimateRigidTransform(vectors2, corners, false);
+                if (newRigidTransform == null) return;
+                var newRigidTransform33 = transformTo3D(newRigidTransform);
+                rigidTransform *= newRigidTransform33;
+                var rigidTransform3 = new Matrix<float>(3, 3);
+                CvInvoke.Invert(rigidTransform, rigidTransform3, DecompMethod.Svd);
+                var rigidTransform2D = transformTo2D(rigidTransform3);
+                CvInvoke.WarpAffine(imageCurrentFrame, imageShifted, rigidTransform2D,
+                    new Size(), Inter.Linear, Warp.Default, BorderType.Constant);
+
+                imageBoxResult.Image = imageShifted;
+                updateMatrices(rigidTransform2D);
+            }
+            catch(Exception j)
+            {
+                labelErrors.Text = "Error " + Convert.ToString(++errorCount);
+            }
+        }
+
         private static ushort countNonZero(byte[] status2)
         {
             ushort nonZero=0;
@@ -235,6 +259,12 @@ namespace stabilization
             return result;
         }
 
+        private void buttonCapture1_Click(object sender, EventArgs e)
+        {
+            inputGrayImage.CopyTo(imageReference);
+            imageBoxInput1.Image = imageReference;
+        }
+
         private void updateReference(object sender, EventArgs e)
         {
             var keypoints = fastDetector.Detect(inputGrayImage, null);
@@ -247,7 +277,7 @@ namespace stabilization
           //      CvInvoke.Circle(inputGrayImage, new Point((int)vectors[i].Point.X, (int)vectors[i].Point.Y), 2, new MCvScalar(0, 0, 255));
           //  }
            
-            imageBoxOutput.Image = inputGrayImage;
+            imageBoxInput2.Image = inputGrayImage;
             initializingTransform();
         }
 
