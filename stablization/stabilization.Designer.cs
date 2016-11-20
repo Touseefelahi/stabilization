@@ -51,6 +51,10 @@
             this.buttonCapture2 = new System.Windows.Forms.Button();
             this.buttonShift = new System.Windows.Forms.Button();
             this.imageBoxLiveFeed = new Emgu.CV.UI.ImageBox();
+            this.labelReference = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.imageBoxInput1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBoxInput2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBoxResult)).BeginInit();
@@ -59,6 +63,9 @@
             // 
             // imageBoxInput1
             // 
+            this.imageBoxInput1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.imageBoxInput1.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.imageBoxInput1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.imageBoxInput1.Location = new System.Drawing.Point(5, 5);
@@ -69,7 +76,7 @@
             // 
             // bt_start
             // 
-            this.bt_start.Location = new System.Drawing.Point(660, 890);
+            this.bt_start.Location = new System.Drawing.Point(651, 890);
             this.bt_start.Name = "bt_start";
             this.bt_start.Size = new System.Drawing.Size(75, 70);
             this.bt_start.TabIndex = 3;
@@ -79,6 +86,8 @@
             // 
             // imageBoxInput2
             // 
+            this.imageBoxInput2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.imageBoxInput2.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.imageBoxInput2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.imageBoxInput2.Location = new System.Drawing.Point(5, 491);
@@ -89,23 +98,25 @@
             // 
             // detect
             // 
-            this.detect.Location = new System.Drawing.Point(741, 890);
+            this.detect.Location = new System.Drawing.Point(1003, 759);
             this.detect.Name = "detect";
             this.detect.Size = new System.Drawing.Size(75, 70);
             this.detect.TabIndex = 4;
             this.detect.Text = "update";
             this.detect.UseVisualStyleBackColor = true;
+            this.detect.Visible = false;
             this.detect.Click += new System.EventHandler(this.updateReference);
             // 
             // checkBoxOpticalFlow
             // 
             this.checkBoxOpticalFlow.AutoSize = true;
-            this.checkBoxOpticalFlow.Location = new System.Drawing.Point(822, 890);
+            this.checkBoxOpticalFlow.Location = new System.Drawing.Point(1084, 759);
             this.checkBoxOpticalFlow.Name = "checkBoxOpticalFlow";
             this.checkBoxOpticalFlow.Size = new System.Drawing.Size(81, 17);
             this.checkBoxOpticalFlow.TabIndex = 5;
             this.checkBoxOpticalFlow.Text = "OpticalFlow";
             this.checkBoxOpticalFlow.UseVisualStyleBackColor = true;
+            this.checkBoxOpticalFlow.Visible = false;
             // 
             // labelStatus
             // 
@@ -128,12 +139,13 @@
             // checkBoxStabilized
             // 
             this.checkBoxStabilized.AutoSize = true;
-            this.checkBoxStabilized.Location = new System.Drawing.Point(822, 913);
+            this.checkBoxStabilized.Location = new System.Drawing.Point(1084, 782);
             this.checkBoxStabilized.Name = "checkBoxStabilized";
             this.checkBoxStabilized.Size = new System.Drawing.Size(65, 17);
             this.checkBoxStabilized.TabIndex = 8;
             this.checkBoxStabilized.Text = "Stabilize";
             this.checkBoxStabilized.UseVisualStyleBackColor = true;
+            this.checkBoxStabilized.Visible = false;
             // 
             // labelErrors
             // 
@@ -147,7 +159,8 @@
             // labelTransform00
             // 
             this.labelTransform00.AutoSize = true;
-            this.labelTransform00.Location = new System.Drawing.Point(657, 493);
+            this.labelTransform00.Location = new System.Drawing.Point(1012, 890);
+            this.labelTransform00.MaximumSize = new System.Drawing.Size(50, 20);
             this.labelTransform00.Name = "labelTransform00";
             this.labelTransform00.Size = new System.Drawing.Size(13, 13);
             this.labelTransform00.TabIndex = 10;
@@ -156,7 +169,8 @@
             // labelTransform01
             // 
             this.labelTransform01.AutoSize = true;
-            this.labelTransform01.Location = new System.Drawing.Point(747, 493);
+            this.labelTransform01.Location = new System.Drawing.Point(1065, 890);
+            this.labelTransform01.MaximumSize = new System.Drawing.Size(50, 20);
             this.labelTransform01.Name = "labelTransform01";
             this.labelTransform01.Size = new System.Drawing.Size(13, 13);
             this.labelTransform01.TabIndex = 11;
@@ -165,7 +179,8 @@
             // labelTransform02
             // 
             this.labelTransform02.AutoSize = true;
-            this.labelTransform02.Location = new System.Drawing.Point(837, 493);
+            this.labelTransform02.Location = new System.Drawing.Point(1118, 890);
+            this.labelTransform02.MaximumSize = new System.Drawing.Size(50, 20);
             this.labelTransform02.Name = "labelTransform02";
             this.labelTransform02.Size = new System.Drawing.Size(13, 13);
             this.labelTransform02.TabIndex = 12;
@@ -174,7 +189,8 @@
             // labelTransform12
             // 
             this.labelTransform12.AutoSize = true;
-            this.labelTransform12.Location = new System.Drawing.Point(837, 518);
+            this.labelTransform12.Location = new System.Drawing.Point(1118, 915);
+            this.labelTransform12.MaximumSize = new System.Drawing.Size(50, 20);
             this.labelTransform12.Name = "labelTransform12";
             this.labelTransform12.Size = new System.Drawing.Size(13, 13);
             this.labelTransform12.TabIndex = 15;
@@ -183,7 +199,8 @@
             // labelTransform11
             // 
             this.labelTransform11.AutoSize = true;
-            this.labelTransform11.Location = new System.Drawing.Point(747, 518);
+            this.labelTransform11.Location = new System.Drawing.Point(1065, 915);
+            this.labelTransform11.MaximumSize = new System.Drawing.Size(50, 20);
             this.labelTransform11.Name = "labelTransform11";
             this.labelTransform11.Size = new System.Drawing.Size(13, 13);
             this.labelTransform11.TabIndex = 14;
@@ -192,7 +209,8 @@
             // labelTransform10
             // 
             this.labelTransform10.AutoSize = true;
-            this.labelTransform10.Location = new System.Drawing.Point(657, 518);
+            this.labelTransform10.Location = new System.Drawing.Point(1012, 915);
+            this.labelTransform10.MaximumSize = new System.Drawing.Size(50, 20);
             this.labelTransform10.Name = "labelTransform10";
             this.labelTransform10.Size = new System.Drawing.Size(13, 13);
             this.labelTransform10.TabIndex = 13;
@@ -201,7 +219,7 @@
             // labelSumTransform
             // 
             this.labelSumTransform.AutoSize = true;
-            this.labelSumTransform.Location = new System.Drawing.Point(868, 508);
+            this.labelSumTransform.Location = new System.Drawing.Point(1012, 938);
             this.labelSumTransform.Name = "labelSumTransform";
             this.labelSumTransform.Size = new System.Drawing.Size(13, 13);
             this.labelSumTransform.TabIndex = 28;
@@ -209,6 +227,7 @@
             // 
             // imageBoxResult
             // 
+            this.imageBoxResult.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.imageBoxResult.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.imageBoxResult.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.imageBoxResult.Location = new System.Drawing.Point(651, 5);
@@ -219,7 +238,7 @@
             // 
             // buttonCapture1
             // 
-            this.buttonCapture1.Location = new System.Drawing.Point(660, 724);
+            this.buttonCapture1.Location = new System.Drawing.Point(731, 890);
             this.buttonCapture1.Name = "buttonCapture1";
             this.buttonCapture1.Size = new System.Drawing.Size(75, 70);
             this.buttonCapture1.TabIndex = 4;
@@ -229,7 +248,7 @@
             // 
             // buttonCapture2
             // 
-            this.buttonCapture2.Location = new System.Drawing.Point(741, 724);
+            this.buttonCapture2.Location = new System.Drawing.Point(811, 890);
             this.buttonCapture2.Name = "buttonCapture2";
             this.buttonCapture2.Size = new System.Drawing.Size(75, 70);
             this.buttonCapture2.TabIndex = 4;
@@ -239,7 +258,7 @@
             // 
             // buttonShift
             // 
-            this.buttonShift.Location = new System.Drawing.Point(822, 724);
+            this.buttonShift.Location = new System.Drawing.Point(891, 890);
             this.buttonShift.Name = "buttonShift";
             this.buttonShift.Size = new System.Drawing.Size(75, 70);
             this.buttonShift.TabIndex = 4;
@@ -249,20 +268,61 @@
             // 
             // imageBoxLiveFeed
             // 
+            this.imageBoxLiveFeed.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.imageBoxLiveFeed.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.imageBoxLiveFeed.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.imageBoxLiveFeed.Location = new System.Drawing.Point(973, 491);
+            this.imageBoxLiveFeed.Location = new System.Drawing.Point(651, 491);
             this.imageBoxLiveFeed.Name = "imageBoxLiveFeed";
-            this.imageBoxLiveFeed.Size = new System.Drawing.Size(318, 239);
-            this.imageBoxLiveFeed.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.imageBoxLiveFeed.Size = new System.Drawing.Size(640, 393);
+            this.imageBoxLiveFeed.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.imageBoxLiveFeed.TabIndex = 30;
             this.imageBoxLiveFeed.TabStop = false;
+            // 
+            // labelReference
+            // 
+            this.labelReference.AutoSize = true;
+            this.labelReference.Location = new System.Drawing.Point(2, 5);
+            this.labelReference.Name = "labelReference";
+            this.labelReference.Size = new System.Drawing.Size(89, 13);
+            this.labelReference.TabIndex = 31;
+            this.labelReference.Text = "Reference Image";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(2, 491);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(74, 13);
+            this.label1.TabIndex = 31;
+            this.label1.Text = "Frame to wrap";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(648, 491);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(54, 13);
+            this.label2.TabIndex = 31;
+            this.label2.Text = "Live Feed";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(648, 5);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(77, 13);
+            this.label3.TabIndex = 31;
+            this.label3.Text = "Wraped Image";
             // 
             // stabilization
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1294, 972);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.labelReference);
             this.Controls.Add(this.imageBoxLiveFeed);
             this.Controls.Add(this.imageBoxResult);
             this.Controls.Add(this.labelSumTransform);
@@ -284,6 +344,8 @@
             this.Controls.Add(this.imageBoxInput1);
             this.Controls.Add(this.imageBoxInput2);
             this.Controls.Add(this.bt_start);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+            this.MaximizeBox = false;
             this.Name = "stabilization";
             this.Text = "Image Stabilization";
             ((System.ComponentModel.ISupportInitialize)(this.imageBoxInput1)).EndInit();
@@ -319,6 +381,10 @@
         private System.Windows.Forms.Button buttonCapture2;
         private System.Windows.Forms.Button buttonShift;
         private Emgu.CV.UI.ImageBox imageBoxLiveFeed;
+        private System.Windows.Forms.Label labelReference;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
     }
 }
 
