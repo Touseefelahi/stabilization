@@ -11,6 +11,7 @@ using Emgu.CV;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Emgu.CV.Features2D;
+using Emgu.CV.XFeatures2D;
 using Emgu.CV.Util;
 
 namespace stabilization
@@ -18,9 +19,10 @@ namespace stabilization
     public partial class stabilization : Form
     {
         private Image<Bgr, byte> inputImage,stabilizedImage;
-        private Image<Gray, byte> inputGrayImage, inputGrayImagePrevious;
+        private Image<Gray, byte> inputGrayImage, inputGrayImagePrevious,mask;
         private Matrix<float> rigidTransform;
-        private FastDetector fastDetector;
+        //private FastDetector fastDetector;
+        private SIFT fastDetector;
         private Capture cam;
         private uint errorCount;
         private VectorOfKeyPoint vectors;
@@ -31,14 +33,38 @@ namespace stabilization
             InitializeComponent();
             inputImage = new Image<Bgr, byte>(640, 480);
             stabilizedImage = new Image<Bgr, byte>(640, 480);
-
+            mask = new Image<Gray, byte>(inputImage.Size);
             inputGrayImage = new Image<Gray, byte>(inputImage.Size);
             inputGrayImagePrevious = new Image<Gray, byte>(inputImage.Size);
-            fastDetector = new FastDetector();
+            fastDetector = new SIFT();
             errorCount = 0;
             initializingTransform();
+            generateMask();
+            imageBoxInput.Image = mask;
         }
-        
+
+        private void generateMask()
+        {
+            for (int row = 0; row < mask.Rows; row++)
+            {
+                for (int col = 0; col < mask.Cols; col++)
+                {
+                    if ((row > (mask.Rows * 0.2) && row < (mask.Rows * 0.8)))
+                    {
+                        if (col > (mask.Cols * 0.2) && col < (mask.Cols * 0.8))
+                            mask.Data[row, col, 0] = 255;
+                    }
+                    else
+                    {
+                        
+                            mask.Data[row, col, 0] = 0;
+                    }
+                        
+                }
+
+            }
+        }
+
         private void processFrame(object sender, EventArgs arg)
         {          
             try
@@ -237,17 +263,17 @@ namespace stabilization
 
         private void updateReference(object sender, EventArgs e)
         {
-            var keypoints = fastDetector.Detect(inputGrayImage, null);
+            var keypoints = fastDetector.Detect(inputGrayImage, mask);
             vectors = new VectorOfKeyPoint(keypoints);
             var aa = vectors.Size;
             inputGrayImage.CopyTo(inputGrayImagePrevious);
 
-          //  for (int i = 0; i < aa; i++)
-          //  {
-          //      CvInvoke.Circle(inputGrayImage, new Point((int)vectors[i].Point.X, (int)vectors[i].Point.Y), 2, new MCvScalar(0, 0, 255));
-          //  }
+            for (int i = 0; i < aa; i++)
+            {
+                CvInvoke.Circle(inputGrayImage, new Point((int)vectors[i].Point.X, (int)vectors[i].Point.Y), 2, new MCvScalar(0, 0, 255));
+            }
            
-            imageBoxOutput.Image = inputGrayImage;
+            imageBoxInput.Image = inputGrayImage;
             initializingTransform();
         }
 
