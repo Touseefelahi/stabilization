@@ -12,7 +12,7 @@ using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Emgu.CV.Features2D;
 using Emgu.CV.Util;
-
+using Emgu.CV.XFeatures2D;
 namespace stabilization
 {
     public partial class stabilization : Form
@@ -20,7 +20,8 @@ namespace stabilization
         private Image<Bgr, byte> inputImage,stabilizedImage;
         private Image<Gray, byte> inputGrayImage, inputGrayImagePrevious,imageReference,imageCurrentFrame,imageShifted;
         private Matrix<float> rigidTransform;
-        private FastDetector fastDetector;
+        //private FastDetector fastDetector;
+        private SIFT fastDetector;
         private Capture cam;
         private uint errorCount;
         private VectorOfKeyPoint vectors;
@@ -36,23 +37,18 @@ namespace stabilization
             imageShifted = new Image<Gray, byte>(inputImage.Size);
             inputGrayImage = new Image<Gray, byte>(inputImage.Size);
             inputGrayImagePrevious = new Image<Gray, byte>(inputImage.Size);
-            fastDetector = new FastDetector();
+            fastDetector = new SIFT();
             errorCount = 0;
+            imageBoxInput2.Location = new Point(0, 0);
+            imageBoxInput2.Parent = imageBoxResult;
             initializingTransform();
+            
         }
         
         private void processFrame(object sender, EventArgs arg)
         {          
-            try
-            {
-                cam.Retrieve(inputImage, 3);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(Convert.ToString(ex), "Error");
-            }
-            CvInvoke.CvtColor(inputImage, inputGrayImage, ColorConversion.Bgr2Gray, 0);      
-
+            cam.Retrieve(inputImage, 3);            
+            CvInvoke.CvtColor(inputImage, inputGrayImage, ColorConversion.Bgr2Gray, 0);    
             if (checkBoxOpticalFlow.Checked)
             {
                 opticalFlow();               
@@ -187,95 +183,78 @@ namespace stabilization
         private void buttonShift_Click(object sender, EventArgs e)
         {
             buttonCapture2_Click(null, null);
+          
             var rigidTransformReturn = transformScene(imageReference, imageCurrentFrame);
+
             CvInvoke.WarpAffine(imageCurrentFrame, imageShifted, rigidTransformReturn,
                    new Size(), Inter.Linear, Warp.Default, BorderType.Constant);
             updateMatrices(rigidTransformReturn);
-            imageBoxResult.Image = imageShifted;
-            /*
-           var keypoints = fastDetector.Detect(imageReference, null);
-           var vectors = new VectorOfKeyPoint(keypoints);
-           var aa = vectors.Size;        
-
-           var a = new MCvTermCriteria(100);
-           byte[] status;
-           float[] errors;
-           PointF[] corners;
-           var vectors2 = vector2Point(vectors);
-
-           CvInvoke.CalcOpticalFlowPyrLK(imageReference, imageCurrentFrame, vectors2,
-               new Size(10, 10), 2, a, out corners, out status, out errors);
-           var matches = countNonZero(status);
-
-           labelStatus.Text = @"Found =" + Convert.ToString(matches);
-           labelTotal.Text = "Total =" + Convert.ToString(errors.Count());
-           try
-           {
-               var newRigidTransform = CvInvoke.EstimateRigidTransform(vectors2, corners, false);
-               if (newRigidTransform == null) return;
-               var newRigidTransform33 = transformTo3D(newRigidTransform);
-               var rigidTransform3 = new Matrix<float>(3, 3);
-               CvInvoke.Invert(newRigidTransform33, rigidTransform3, DecompMethod.Svd);
-               var rigidTransform2D = transformTo2D(rigidTransform3);
-               CvInvoke.WarpAffine(imageCurrentFrame, imageShifted, rigidTransform2D,
-                   new Size(), Inter.Linear, Warp.Default, BorderType.Constant);
-
-               imageBoxResult.Image = imageShifted;
-               updateMatrices(rigidTransform2D);
-           }
-           catch(Exception j)
-           {
-               labelErrors.Text = "Error " + Convert.ToString(++errorCount);
-           }
-           */
+            imageBoxResult.Image = imageReference;
+            var flagErrorImage = false;
+            if (rigidTransformReturn.Data[0, 0] + rigidTransformReturn[1,0]== 1.00f)
+            {
+                flagErrorImage = true;
+            }
+            var imageCurrentFrameTransparent = transparentImageConverter(imageShifted, (byte)opacity.Value,flagErrorImage);
+            imageBoxInput2.Image = imageCurrentFrameTransparent;
+        
         }
 
-        private static Matrix<float> transformScene(Image<Gray, byte> imageReference, Image<Gray, byte> imageCurrentFrame)
+        private static Image<Bgra, byte> transparentImageConverter(Image<Gray, byte> imageCurrentFrame, byte v, bool flagErrorImage)
+        {
+            var transparentImage = new Image<Bgra, byte>(imageCurrentFrame.Size);
+            
+                for (int r = 0; r < imageCurrentFrame.Rows; r++)
+                {
+                    for (int c = 0; c < imageCurrentFrame.Cols; c++)
+                    {
+                        transparentImage.Data[r, c, 0] = imageCurrentFrame.Data[r, c, 0];
+                        transparentImage.Data[r, c, 1] = imageCurrentFrame.Data[r, c, 0];
+                    if (flagErrorImage)
+                    {
+                        transparentImage.Data[r, c, 2] = 255;
+                    }
+                    else
+                    {
+                        transparentImage.Data[r, c, 2] = imageCurrentFrame.Data[r, c, 0];
+                    }
+                        transparentImage.Data[r, c, 3] = (byte)v;
+                    }
+                }
+                return transparentImage;
+           
+        }
+
+        public static Matrix<float> transformScene(Image<Gray, byte> imageReference, Image<Gray, byte> imageCurrentFrame)
         {
             using (var fastDetector = new FastDetector())
             {
                 var keypoints = fastDetector.Detect(imageReference, null);
                 var vectors = new VectorOfKeyPoint(keypoints);
                 var aa = vectors.Size;
-
                 var a = new MCvTermCriteria(100);
                 byte[] status;
                 float[] errors;
                 PointF[] corners;
                 var vectors2 = vector2Point(vectors);
-
                 CvInvoke.CalcOpticalFlowPyrLK(imageReference, imageCurrentFrame, vectors2,
                     new Size(10, 10), 2, a, out corners, out status, out errors);
                 var matches = countNonZero(status);
-
-
-                var newRigidTransform = CvInvoke.EstimateRigidTransform(vectors2, corners, false);
-                if (newRigidTransform != null)
+                try
                 {
-                    try
-                    {
-                        var newRigidTransform33 = transformTo3D(newRigidTransform);
-                        var rigidTransform3 = new Matrix<float>(3, 3);
-                        CvInvoke.Invert(newRigidTransform33, rigidTransform3, DecompMethod.Svd);
-                        var rigidTransform2D = transformTo2D(rigidTransform3);
-                        return rigidTransform2D;
-                    }
-                    catch (Exception)
-                    {
-                        float[,] target = {
-                            {1f,0,0},
-                            {0,1f,0},
-                       };
-                        var rigidTransform = new Matrix<float>(target);
-                        return rigidTransform;
-                    }
+                    var newRigidTransform = CvInvoke.EstimateRigidTransform(vectors2, corners, false);
+                    var newRigidTransform33 = transformTo3D(newRigidTransform);
+                    var rigidTransform3 = new Matrix<float>(3, 3);
+                    CvInvoke.Invert(newRigidTransform33, rigidTransform3, DecompMethod.Svd);
+                    var rigidTransform2D = transformTo2D(rigidTransform3);
+                    return rigidTransform2D;
                 }
-                else
+                catch (Exception)
                 {
                     float[,] target = {
-                            {-1f,0,0},
-                            {0,1f,0},
-                       };
+                         {1f,0,0},
+                         {0,1f,0},
+                    };
                     var rigidTransform = new Matrix<float>(target);
                     return rigidTransform;
                 }
@@ -359,6 +338,5 @@ namespace stabilization
             }
 
         }
-    
     }
 }
