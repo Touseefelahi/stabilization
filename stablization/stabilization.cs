@@ -27,6 +27,7 @@ namespace stabilization
         private uint errorCount;
         private VectorOfKeyPoint vectors;
         private bool captureInProgress;
+        private float borderPercent;
 
         public stabilization()
         {
@@ -38,9 +39,10 @@ namespace stabilization
             inputGrayImagePrevious = new Image<Gray, byte>(inputImage.Size);
             fastDetector = new SIFT();
             errorCount = 0;
+            borderPercent = 0.05f;
             initializingTransform();
             generateMask();
-            imageBoxInput.Image = mask;
+            imageBoxInput.Image = mask;   
         }
 
         private void generateMask()
@@ -49,9 +51,9 @@ namespace stabilization
             {
                 for (int col = 0; col < mask.Cols; col++)
                 {
-                    if ((row > (mask.Rows * 0.2) && row < (mask.Rows * 0.8)))
+                    if ((row > (int)(mask.Rows * borderPercent) && row < (int)(mask.Rows * (1-borderPercent))))
                     {
-                        if (col > (mask.Cols * 0.2) && col < (mask.Cols * 0.8))
+                        if (col >(int)(mask.Cols * borderPercent) && col < (int)(mask.Cols * (1-borderPercent)))
                             mask.Data[row, col, 0] = 255;
                     }
                     else
@@ -63,6 +65,7 @@ namespace stabilization
                 }
 
             }
+            imageBoxInput.Image = mask;
         }
 
         private void processFrame(object sender, EventArgs arg)
