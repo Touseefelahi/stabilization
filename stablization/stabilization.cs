@@ -39,10 +39,10 @@ namespace stabilization
             inputGrayImagePrevious = new Image<Gray, byte>(inputImage.Size);
             fastDetector = new SIFT();
             errorCount = 0;
-            imageBoxInput2.Location = new Point(0, 0);
-            imageBoxInput2.Parent = imageBoxResult;
+         //   imageBoxInput2.Location = new Point(0, 0);
+         //   imageBoxInput2.Parent = imageBoxResult;
             initializingTransform();
-            
+            updateReference(null,null);
         }
         
         private void processFrame(object sender, EventArgs arg)
@@ -63,9 +63,17 @@ namespace stabilization
             float[] errors;
             PointF[] corners;
             var vectors2 = vector2Point(vectors);
-            
-            CvInvoke.CalcOpticalFlowPyrLK(inputGrayImagePrevious, inputGrayImage, vectors2,
-                new Size(10, 10), 2, a, out corners, out status, out errors);
+
+            try
+            {
+                CvInvoke.CalcOpticalFlowPyrLK(inputGrayImagePrevious, inputGrayImage, vectors2,
+               new Size(10, 10), 2, a, out corners, out status, out errors);
+            }
+            catch (Exception)
+            {
+                return;
+            }
+           
             var matches = countNonZero(status);
 
             if (checkBoxStabilized.Checked)
@@ -87,18 +95,19 @@ namespace stabilization
                     CvInvoke.Invert(rigidTransform, rigidTransform3, DecompMethod.Svd);                
                     var rigidTransform2D = transformTo2D(rigidTransform3);
                     CvInvoke.WarpAffine(inputImage, stabilizedImage, rigidTransform2D,
-                        new Size(),Inter.Linear,Warp.Default,BorderType.Constant);                                  
+                        new Size(),Inter.Linear,Warp.Default,BorderType.Transparent);                                  
 
                     //   checkBoxStabilized.Checked = false;
                     //   updateMatrices(rigidTransform2D);
                     refreshKeyPoints(corners,status,matches);
                     inputGrayImage.CopyTo(inputGrayImagePrevious);
+                    imageBoxResult.Image = stabilizedImage;
                     //   initializingTransform(); 
                 }
                 catch (Exception)
                 {
                     labelErrors.Text = "Error "+Convert.ToString(++errorCount);
-                 //   updateReference(null,null);
+                    updateReference(null,null);
                 }
                
             }
@@ -196,7 +205,8 @@ namespace stabilization
                 flagErrorImage = true;
             }
             var imageCurrentFrameTransparent = transparentImageConverter(imageShifted, (byte)opacity.Value,flagErrorImage);
-            imageBoxInput2.Image = imageCurrentFrameTransparent;
+             imageBoxInput2.Image = imageCurrentFrameTransparent;
+            //imageBoxResult.Image = imageShifted;
         
         }
 
@@ -287,7 +297,11 @@ namespace stabilization
 
         private void buttonCapture1_Click(object sender, EventArgs e)
         {
+           
             inputGrayImage.CopyTo(imageReference);
+            updateReference(null, null);
+            checkBoxOpticalFlow.Checked = true;
+            checkBoxStabilized.Checked = true;
             imageBoxInput1.Image = imageReference;
         }
 
